@@ -1,7 +1,9 @@
 # TimeFuze Architecture
 
 ## Origin
-https://blog.yuuk.io/entry/2017/timefuze-architecture
+https://blog.yuuk.io/entry/2017/timefuze-architecture  
+とても面白かったので忘れないうちにアプリケーションを走り書き。  
+CQRS, イベントソーシング, AXON辺りと組み合わせてみたい。
 
 ## How to use it
 
