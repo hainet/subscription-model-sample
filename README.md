@@ -1,9 +1,33 @@
-# TimeFuze Architecture
+# 継続課金システム
+![](http://drive.google.com/uc?export=view&id=1biuOthFf2ry2-olRom1xFYZjqdcOoMuR)
 
-## Origin
+## コンポーネント
+
+### 継続課金システム
+継続課金登録を受け付け、1ヶ月に1回課金処理を行う。
+
+|エンドポイント|概要|
+|:---:|:---|
+|/subscribe|継続課金を登録する。|
+
+### 銀行システム
+
+|エンドポイント|概要|
+|:---:|:---|
+|/open-account|口座を開設する。|
+|/direct-debit|口座から任意の金額を引き落としする。|
+|/check-balance|継続課金登録をする。|
+
+操作の名称をエンドポイント名とし、RESTらしい名前を敢えて避けている。
+
+## アーキテクチャ
+
+- TimeFuze Architecture  
 https://blog.yuuk.io/entry/2017/timefuze-architecture  
-とても面白かったので忘れないうちにアプリケーションを走り書き。  
-CQRS, イベントソーシング, AXON辺りと組み合わせてみたい。
+- CQRS
+- イベントソーシング
+
+## ↓Delete later↓
 
 ## How to use it
 
