@@ -1,5 +1,5 @@
 # 継続課金システム
-![](http://drive.google.com/uc?export=view&id=1etbrE32uSQvXpF2XcohhtYg3Z4EA8jLu)
+![](http://drive.google.com/uc?export=view&id=1BFnCZJzNgy4EamkhI_wYn4HV1ckrgB0g)
 
 ## コンポーネント
 
