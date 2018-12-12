@@ -28,6 +28,13 @@ https://blog.yuuk.io/entry/2017/timefuze-architecture
 - CQRS
 - イベントソーシング
 
+## 技術スタック
+- Spring Boot
+- Axon Framework
+- Axon DB
+- H2 Database
+- Fireworq
+
 ## ↓Delete later↓
 
 ## How to use it
