@@ -13,5 +13,5 @@ public class Subscription {
 
     private String user;
 
-    private String account;
+    private String accountId;
 }

@@ -1,11 +1,15 @@
 package com.hainet.subscription.service;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.UUID;
+
 @RestController
+@Slf4j
 public class SubscriptionController {
 
     private final BankServiceTemplate bankServiceTemplate;
@@ -24,31 +28,39 @@ public class SubscriptionController {
     }
 
     @PostMapping("/subscribe")
-
-    public void subscribe(@RequestBody final Subscription subscription) {
-        System.out.println(subscription);
-
+    public String subscribe(@RequestBody final Subscription subscription) {
         // 口座照会クエリ
-        bankServiceTemplate.checkAccount();
+        bankServiceTemplate.checkAccount(subscription.getAccountId());
+
+        final String subscriptionId = UUID.randomUUID().toString();
+        subscription.setId(subscriptionId);
 
         // サブスクリプション情報書き込み
         dao.insert(subscription);
 
         // 継続課金キュー
         fireworqTemplate.subscribe(subscription);
+
+        return subscriptionId;
     }
 
     @PostMapping("/bill/{subscriptionId}")
-    public void bill(@PathVariable final String subscriptionId) {
-        System.out.println(subscriptionId);
-
+    public String bill(@PathVariable final String subscriptionId) {
         // サブスクリプション情報取得
         final Subscription subscription = dao.findById(subscriptionId);
 
-        // 引き落としコマンド
-        bankServiceTemplate.directDebit();
+        if (subscription != null) {
+            // 引き落としコマンド
+            bankServiceTemplate.directDebit();
 
-        // 継続課金キュー
-        fireworqTemplate.subscribe(subscription);
+            // 継続課金キュー
+            fireworqTemplate.subscribe(subscription);
+
+            log.info("Receipt here: " + subscription);
+
+            return "{\"status\":\"success\"}";
+        } else {
+            throw new RuntimeException();
+        }
     }
 }

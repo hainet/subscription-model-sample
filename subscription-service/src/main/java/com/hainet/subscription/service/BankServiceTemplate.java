@@ -12,11 +12,19 @@ public class BankServiceTemplate {
         this.restTemplate = restTemplate;
     }
 
-    public void checkAccount() {
-
+    public void checkAccount(final String accountId) {
+        restTemplate.getForObject(
+                "http://localhost:9020/check-accountId?account_id={accountId}",
+                String.class,
+                accountId
+        );
     }
 
     public void directDebit() {
-
+        restTemplate.postForObject(
+                "http://localhost:9020/direct-debit",
+                "",
+                String.class
+        );
     }
 }

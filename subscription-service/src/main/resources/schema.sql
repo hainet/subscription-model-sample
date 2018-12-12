@@ -1,0 +1,7 @@
+CREATE TABLE IF NOT EXISTS subscription (
+  id VARCHAR(36) PRIMARY KEY,
+  service VARCHAR(20) NOT NULL,
+  amount INT NOT NULL,
+  user VARCHAR(10) NOT NULL,
+  account_id VARCHAR(36) NOT NULL
+);
