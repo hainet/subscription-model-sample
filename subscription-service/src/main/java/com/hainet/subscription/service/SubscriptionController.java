@@ -29,9 +29,6 @@ public class SubscriptionController {
 
     @PostMapping("/subscribe")
     public String subscribe(@RequestBody final Subscription subscription) {
-        // 口座照会クエリ
-        bankServiceTemplate.checkAccount(subscription.getAccountId());
-
         final String subscriptionId = UUID.randomUUID().toString();
         subscription.setId(subscriptionId);
 
@@ -51,7 +48,10 @@ public class SubscriptionController {
 
         if (subscription != null) {
             // 引き落としコマンド
-            bankServiceTemplate.directDebit();
+            bankServiceTemplate.directDebit(
+                    subscription.getAccountId(),
+                    subscription.getAmount()
+            );
 
             // 継続課金キュー
             fireworqTemplate.subscribe(subscription);

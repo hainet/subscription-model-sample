@@ -3,6 +3,9 @@ package com.hainet.subscription.service;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @Component
 public class BankServiceTemplate {
 
@@ -12,18 +15,14 @@ public class BankServiceTemplate {
         this.restTemplate = restTemplate;
     }
 
-    public void checkAccount(final String accountId) {
-        restTemplate.getForObject(
-                "http://localhost:9020/check-accountId?account_id={accountId}",
-                String.class,
-                accountId
-        );
-    }
+    public void directDebit(final String accountId, final int amount) {
+        final Map<String, Object> directDebitRequest = new HashMap<>();
+        directDebitRequest.put("id", accountId);
+        directDebitRequest.put("amount", amount);
 
-    public void directDebit() {
         restTemplate.postForObject(
                 "http://localhost:9020/direct-debit",
-                "",
+                directDebitRequest,
                 String.class
         );
     }
