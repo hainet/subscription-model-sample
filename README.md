@@ -4,6 +4,7 @@
 ## コンポーネント
 
 ### 継続課金サービス
+
 継続課金登録を受け付け、1ヶ月に1回課金処理を行う。
 
 |エンドポイント|概要|
@@ -29,125 +30,47 @@ https://blog.yuuk.io/entry/2017/timefuze-architecture
 - イベントソーシング
 
 ## 技術スタック
+
 - Spring Boot
 - Axon Framework
 - Axon DB
 - H2 Database
 - Fireworq
 
-## ↓Delete later↓
-
-## How to use it
+## Cheat sheet
 
 ### fireworq
+
 https://github.com/fireworq/fireworq
 ```bash
 script/docker/compose up
 ```
 
-### mysql
+### 継続課金サービス
+
+- サブスクリプション登録(エンドユーザーが利用する)
 ```bash
-mysql.server start
-mysql -u root
-```
-```mysql
-CREATE DATABASE timefuze_architecture;
-
-SHOW DATABASES;
-
-USE timefuze_architecture;
-
-CREATE TABLE job (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    merchant VARCHAR(5) NOT NULL,
-    job_id VARCHAR(36) NOT NULL,
-    count INT NOT NULL,
-    cycle INT NOT NULL,
-    status VARCHAR(10) NOT NULL,
-    created_at DATETIME NOT NULL,
-    UNIQUE(job_id, count)
-);
-
-DESCRIBE job;
+curl -X POST http://localhost:9010/subscribe -H 'Content-Type:application/json' -d '{"service":"サブスクリプション","amount":980,"user":"hainet","account_id":"UUID"}'
 ```
 
-### Job queue
+- 課金(継続課金サービスがFireworq経由で利用する)
 ```bash
-curl -XPOST \
-http://localhost:8080/job/merchant-alpha \
--d \
-'{
-  "url": "http://Haines-MBP.elecom:8091",
-  "payload": {
-      "id": "プロテイン定期購入",
-      "count": 1,
-      "cycle": 3,
-      "detail": {
-          "name": "haient",
-          "product": "プロテイン",
-          "amount": 4980
-      }
-  }
-}'
-
-curl -XPOST \
-http://localhost:8080/job/merchant-alpha \
--d \
-'{
-  "url": "http://Haines-MBP.elecom:8091",
-  "payload": {
-      "id": "マルチビタミン定期購入",
-      "count": 1,
-      "cycle": 2,
-      "detail": {
-          "name": "haient",
-          "product": "マルチビタミン",
-          "amount": 1280
-      }
-  }
-}'
-
-curl -XPOST \
-http://localhost:8080/job/merchant-beta \
--d \
-'{
-    "url": "http://Haines-MBP.elecom:8092",
-    "payload": {
-        "id": "スプラトゥーン継続課金",
-        "count": 1,
-        "cycle": 1,
-        "detail": {
-            "name": "yama",
-            "product": "スプラトゥーン",
-            "amount": 980
-        }
-    }
-}'
-
-curl -XPOST \
-http://localhost:8080/job/merchant-gamma \
--d \
-'{
-    "url": "http://Haines-MBP.elecom:8093",
-    "max_retries": 3,
-    "retry_delay": 3,
-    "payload": {
-        "id": "ブレードサーバー維持費",
-        "count": 1,
-        "cycle": 12,
-        "max_retries": 3,
-        "retry_delay": 3, 
-        "detail": {
-            "name": "mae",
-            "product": "ブレードサーバー",
-            "amount": 980000
-        }
-    }
-}'
+curl -X POST http://localhost:9010/bill/{subscriptionId}
 ```
 
-### Job management
+### 銀行サービス
+
+- 口座開設(エンドユーザーが利用する)
 ```bash
-curl localhost:8080/queue/default/waiting | jq
-curl localhost:8080/queue/default/failed | jq
+curl -X POST http://localhost:9020/open-account -H 'Content-Type:application/json' -d '{"balance":500000}'
+```
+
+- 口座引き落とし(継続課金サービスが利用する)
+```bash
+curl -X POST http://localhost:9020/direct-debit -H 'Content-Type:application/json' -d '{"id":"UUID","amount":980}'
+```
+
+- 口座照会(デバッグ用)
+```bash
+curl http://localhost:9020/accounts
 ```
